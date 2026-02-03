@@ -3,10 +3,12 @@ package org.acme.infraestructure.messaging.consumers;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.acme.domain.services.WordService;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 
+@Slf4j
 @ApplicationScoped
 public class WordConsumer {
 

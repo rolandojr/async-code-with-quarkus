@@ -1,0 +1,11 @@
+{
+  "namespace": "org.acme.domain.models.avro",
+  "type": "record",
+  "name": "WordRecord",
+  "fields": [
+    {
+      "name": "word",
+      "type": "string"
+    }
+  ]
+}

@@ -21,6 +21,17 @@ quarkus:
   hibernate-orm:
     database:
       generation: update
+  log:
+    console:
+      format: "%d{HH:mm:ss} %-5p [%c{2.}] (%t) [%X{traceId}] %s%e%n"
+    file:
+      enabled: true
+      path: 'D:/developer/docker/elk/logs/quarkus-app.log'
+      level: INFO
+      format: JSON
+
+  context-propagation:
+    enabled: true
 
 # Configuración de Mensajería (SmallRye Reactive Messaging)
 mp:
@@ -37,6 +48,20 @@ mp:
           offset:
             reset: earliest
 
+        # --- CAMBIOS PARA SCHEMA REGISTRY ---
+        # Usamos Avro para el valor (Value)
+        value:
+          deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+          # URL del Schema Registry
+        schema:
+          registry:
+            url: http://localhost:8081
+          # Indica que queremos que convierta el Avro a un objeto específico (POJO generado)
+        specific:
+          avro:
+            reader: true
+          # ------------------------------------
+
         # Estrategia de fallo y DLQ
         failure-strategy: dead-letter-queue
         dead-letter-queue:
@@ -44,4 +69,4 @@ mp:
           key:
             serializer: org.apache.kafka.common.serialization.StringSerializer
           value:
-            serializer: org.apache.kafka.common.serialization.StringSerializer
+            serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
