@@ -5,6 +5,7 @@ import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.acme.domain.models.avro.WordRecord;
 import org.acme.infraestructure.persistence.WordRepository;
 import org.acme.infraestructure.persistence.entities.WordEntity;
 
@@ -18,11 +19,12 @@ public class WordService {
     WordRepository wordRepository;
 
     @WithTransaction
-    public Uni<String> process(String word) {
-        log.info("Processing word: {}", word);
-        if (word == null || word.isEmpty()) {
+    public Uni<String> process(WordRecord record) {
+        log.info("Processing record: {}", record);
+        if (record == null || record.getWord().isEmpty()) {
             return Uni.createFrom().failure(new IllegalArgumentException("Empty word"));
         }
+        String word = record.getWord();
         return Uni.createFrom().item(word.toUpperCase())
                 .onItem().call(upper -> wordRepository.persist(new WordEntity(upper, LocalDateTime.now())))
                 .onTermination().invoke(() -> log.info("Finished processing message with word: {}", word));
